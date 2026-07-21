@@ -44,6 +44,8 @@ test("商机管理提供列表、看板、详情和新建流程", async () => {
   assert.match(page, /OpportunityDetail/);
   assert.match(page, /OpportunityCreate/);
   assert.match(page, /aria-label="商机阶段"/);
+  assert.match(page, /aria-label="负责人"/);
+  assert.match(page, /全部负责人/);
   assert.match(page, />查询</);
   assert.doesNotMatch(page, /更多筛选|全部商机/);
 });

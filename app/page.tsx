@@ -233,16 +233,20 @@ const opportunities: Opportunity[] = [
 function OpportunityManagement({ view, onNavigate }: { view: "list" | "board"; onNavigate: (page: PageId) => void }) {
   const [selected, setSelected] = useState<Opportunity | null>(null);
   const [creating, setCreating] = useState(false);
+  const [stageInput, setStageInput] = useState("全部阶段");
+  const [ownerInput, setOwnerInput] = useState("全部负责人");
   const [stageFilter, setStageFilter] = useState("全部阶段");
+  const [ownerFilter, setOwnerFilter] = useState("全部负责人");
   const [keywordInput, setKeywordInput] = useState("");
   const [keyword, setKeyword] = useState("");
   const [toast, setToast] = useState("");
-  const filtered = opportunities.filter(item => (stageFilter === "全部阶段" || item.stage === stageFilter) && `${item.name}${item.customer}${item.id}`.includes(keyword));
+  const filtered = opportunities.filter(item => (stageFilter === "全部阶段" || item.stage === stageFilter) && (ownerFilter === "全部负责人" || item.owner === ownerFilter) && `${item.name}${item.customer}${item.id}`.includes(keyword));
+  const applyQuery = () => { setKeyword(keywordInput.trim()); setStageFilter(stageInput); setOwnerFilter(ownerInput); };
   const notify = (message: string) => { setToast(message); window.setTimeout(() => setToast(""), 2200); };
   return <div className="standard-page opportunity-page">
     <header className="opportunity-heading"><div><p>PSA / 商机管理</p><h1>{view === "list" ? "商机列表" : "商机看板"}</h1><span>统一管理从线索确认到赢单转项目的完整商机过程。</span></div><div className="page-actions"><button className="secondary-action" onClick={() => notify("商机数据已刷新")}>↻ 刷新</button><button className="primary-action" onClick={() => setCreating(true)}>＋ 新建商机</button></div></header>
     <section className="opportunity-kpis"><OpportunityKpi label="进行中商机" value="18" note="本月新增 5 个" tone="blue" /><OpportunityKpi label="预计金额" value="¥ 2,350万" note="加权金额 ¥1,468万" tone="violet" /><OpportunityKpi label="本月预计赢单" value="4" note="预计金额 ¥760万" tone="green" /><OpportunityKpi label="需要跟进" value="6" note="其中 2 个已逾期" tone="amber" /></section>
-    <section className="opportunity-toolbar"><div className="view-switch"><button className={view === "list" ? "active" : ""} onClick={() => onNavigate("opportunity-list")}>☷ 列表</button><button className={view === "board" ? "active" : ""} onClick={() => onNavigate("opportunity-board")}>▦ 看板</button></div><div className="opportunity-search"><span>⌕</span><input value={keywordInput} onChange={e => setKeywordInput(e.target.value)} onKeyDown={e => e.key === "Enter" && setKeyword(keywordInput.trim())} placeholder="搜索商机名称、客户或编号" /></div><select aria-label="商机阶段" value={stageFilter} onChange={e => setStageFilter(e.target.value)}><option>全部阶段</option>{opportunityStages.map(stage => <option key={stage}>{stage}</option>)}</select><button className="opportunity-query" onClick={() => setKeyword(keywordInput.trim())}>查询</button></section>
+    <section className="opportunity-toolbar"><div className="view-switch"><button className={view === "list" ? "active" : ""} onClick={() => onNavigate("opportunity-list")}>☷ 列表</button><button className={view === "board" ? "active" : ""} onClick={() => onNavigate("opportunity-board")}>▦ 看板</button></div><div className="opportunity-search"><span>⌕</span><input value={keywordInput} onChange={e => setKeywordInput(e.target.value)} onKeyDown={e => e.key === "Enter" && applyQuery()} placeholder="搜索商机名称、客户或编号" /></div><select aria-label="商机阶段" value={stageInput} onChange={e => setStageInput(e.target.value)}><option>全部阶段</option>{opportunityStages.map(stage => <option key={stage}>{stage}</option>)}</select><select aria-label="负责人" value={ownerInput} onChange={e => setOwnerInput(e.target.value)}><option>全部负责人</option>{Array.from(new Set(opportunities.map(item => item.owner))).map(owner => <option key={owner}>{owner}</option>)}</select><button className="opportunity-query" onClick={applyQuery}>查询</button></section>
     {view === "list" ? <OpportunityTable items={filtered} onSelect={setSelected} /> : <OpportunityBoard items={filtered} onSelect={setSelected} />}
     {selected && <OpportunityDetail item={selected} onClose={() => setSelected(null)} onNotify={notify} />}
     {creating && <OpportunityCreate onClose={() => setCreating(false)} onCreated={() => { setCreating(false); notify("商机已创建，当前为原型模拟数据"); }} />}
