@@ -59,5 +59,7 @@ test("项目管理提供生命周期、双来源和项目详情", async () => {
   assert.match(page, /ProjectDetail/);
   assert.match(page, /ProjectCreate/);
   assert.match(page, /aria-label="项目阶段"/);
-  assert.match(page, /aria-label="项目经理"/);
+  assert.match(page, /aria-label="MIC"/);
+  assert.match(page, /aria-label="PIC"/);
+  assert.doesNotMatch(page, /项目经理/);
 });
