@@ -62,4 +62,6 @@ test("项目管理提供生命周期、双来源和项目详情", async () => {
   assert.match(page, /aria-label="MIC"/);
   assert.match(page, /aria-label="PIC"/);
   assert.doesNotMatch(page, /项目经理/);
+  assert.ok(page.indexOf('aria-label="PIC"') < page.indexOf('aria-label="MIC"'), "查询栏应先显示 PIC，再显示 MIC");
+  assert.match(page, /<span>PIC<\/span><span>MIC<\/span>/);
 });
