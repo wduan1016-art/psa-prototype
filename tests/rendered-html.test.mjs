@@ -49,3 +49,15 @@ test("商机管理提供列表、看板、详情和新建流程", async () => {
   assert.match(page, />查询</);
   assert.doesNotMatch(page, /更多筛选|全部商机/);
 });
+
+test("项目管理提供生命周期、双来源和项目详情", async () => {
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  for (const label of ["进行中项目", "合同总额", "本月待验收", "风险项目", "项目启动", "规划设计", "实施交付", "验收结项", "从商机转化", "直接新建", "里程碑", "项目任务", "项目团队", "项目资料", "拆分任务", "项目归档"]) {
+    assert.match(page, new RegExp(label));
+  }
+  assert.match(page, /ProjectManagement/);
+  assert.match(page, /ProjectDetail/);
+  assert.match(page, /ProjectCreate/);
+  assert.match(page, /aria-label="项目阶段"/);
+  assert.match(page, /aria-label="项目经理"/);
+});
