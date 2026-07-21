@@ -34,3 +34,13 @@ test("PSA 页面提供导航、工作台和统一页面状态", async () => {
   assert.match(page, /is-collapsed/);
   assert.doesNotMatch(page, /fetch\(|\/api\//);
 });
+
+test("商机管理提供列表、看板、详情和新建流程", async () => {
+  const page = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  for (const label of ["进行中商机", "预计金额", "本月预计赢单", "需要跟进", "商机列表", "商机看板", "新建商机", "记录跟进", "推进阶段", "转为项目", "跟进记录", "商机资料", "上传资料", "首次跟进计划"]) {
+    assert.match(page, new RegExp(label));
+  }
+  assert.match(page, /OpportunityManagement/);
+  assert.match(page, /OpportunityDetail/);
+  assert.match(page, /OpportunityCreate/);
+});
